@@ -67,10 +67,10 @@ html, body {
     height: 190px;
     border-radius: 24px;
     background: radial-gradient(ellipse at center, 
-        rgba(107, 197, 166, 0.2) 0%, 
-        rgba(107, 197, 166, 0.15) 30%, 
-        rgba(107, 197, 166, 0.05) 60%, 
-        rgba(107, 197, 166, 0) 85%);
+        rgba(139, 92, 246, 0.2) 0%, 
+        rgba(139, 92, 246, 0.15) 30%, 
+        rgba(139, 92, 246, 0.05) 60%, 
+        rgba(139, 92, 246, 0) 85%);
     filter: blur(25px);
     z-index: 0;
     pointer-events: none;
@@ -89,6 +89,34 @@ html, body {
     line-height: 1;
 }
 
+/* Premium Pro Badge */
+.limen-title .pro-badge {
+    font-size: 2rem;
+    font-weight: 300;
+    vertical-align: top;
+    color: #8b5cf6;
+    margin-left: 4px;
+    position: relative;
+    top: -8px;
+}
+
+/* Premium Preview Badge */
+.preview-badge {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 24px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
 .tagline {
     text-align: center;
     color: #8b5cf6;
@@ -96,7 +124,7 @@ html, body {
     font-weight: 400;
     letter-spacing: 0.05em;
     margin-top: 15px;
-    opacity: 0.8;
+    opacity: 0.9;
     z-index: 1;
     position: relative;
     max-width: 320px;
@@ -131,9 +159,15 @@ html, body {
     opacity: 0.5;
 }
 
+.screen:not(#screen-entry) .brand .brand-pro {
+    color: #8b5cf6;
+    font-size: 0.8em;
+    margin-left: 2px;
+}
+
 /* BUTTONS */
 .btn-primary {
-    background-color: #2b2b35;
+    background: linear-gradient(135deg, #2b2b35 0%, #3a3a47 100%);
     color: #e5e5e5;
     border: none;
     border-radius: 12px;
@@ -147,12 +181,14 @@ html, body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     position: relative;
     z-index: 2;
+    border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
 .btn-primary:hover {
-    background-color: #3a3a47;
+    background: linear-gradient(135deg, #3a3a47 0%, #4a4a57 100%);
     transform: translateY(-1px);
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .btn-primary:active {
@@ -208,10 +244,11 @@ html, body {
     height: 220px;
     border-radius: 50%;
     background: radial-gradient(circle, 
-        rgba(107, 197, 166, 0.15) 0%, 
-        rgba(107, 197, 166, 0.1) 30%, 
-        rgba(107, 197, 166, 0) 70%);
-    filter: blur(15px);
+        rgba(139, 92, 246, 0.2) 0%, 
+        rgba(139, 92, 246, 0.15) 30%, 
+        rgba(139, 92, 246, 0.05) 60%, 
+        rgba(139, 92, 246, 0) 85%);
+    filter: blur(20px);
     transition: all 0.5s ease;
     z-index: 0;
     pointer-events: none;
@@ -285,7 +322,7 @@ html, body {
 }
 
 .btn-feedback[data-feedback="yes"]:hover {
-    background-color: rgba(107, 197, 166, 0.2);
+    background-color: rgba(139, 92, 246, 0.2);
 }
 
 .btn-feedback[data-feedback="little"]:hover {
@@ -322,6 +359,7 @@ html, body {
     padding: 2rem;
     margin-bottom: 2rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
 .summary-stats {
@@ -336,6 +374,7 @@ html, body {
     padding: 1rem;
     background-color: #3a3a47;
     border-radius: 12px;
+    border: 1px solid rgba(139, 92, 246, 0.05);
 }
 
 .stat-value {
@@ -358,6 +397,7 @@ html, body {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     text-align: left;
+    border: 1px solid rgba(139, 92, 246, 0.05);
 }
 
 .pattern-insight h3 {
@@ -379,6 +419,7 @@ html, body {
     margin-top: 1.5rem;
     text-align: left;
     border-left: 4px solid #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.05);
 }
 
 .psychological-tip h3 {
@@ -413,11 +454,13 @@ html, body {
     background-color: #3a3a47;
     border-radius: 8px;
     transition: transform 0.2s ease;
+    border: 1px solid rgba(139, 92, 246, 0.05);
 }
 
 .chart-bar:hover {
     transform: translateX(5px);
     background-color: #4a4a57;
+    border-color: rgba(139, 92, 246, 0.1);
 }
 
 .chart-label {
@@ -467,13 +510,14 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(255, 68, 68, 0.4);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
     transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn-emergency:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 30px rgba(255, 68, 68, 0.5);
+    box-shadow: 0 6px 30px rgba(124, 58, 237, 0.5);
 }
 
 .btn-emergency:active {
@@ -486,15 +530,15 @@ html, body {
 
 @keyframes emergencyPulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.7);
         transform: scale(1);
     }
     50% {
-        box-shadow: 0 0 0 12px rgba(255, 107, 107, 0);
+        box-shadow: 0 0 0 12px rgba(124, 58, 237, 0);
         transform: scale(1.05);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
         transform: scale(1);
     }
 }
@@ -520,11 +564,22 @@ html, body {
         font-size: 3.5rem;
     }
     
+    .limen-title .pro-badge {
+        font-size: 1.5rem;
+        top: -6px;
+    }
+    
     .tagline {
         font-size: 0.8rem;
         margin-top: 12px;
         max-width: 280px;
         white-space: nowrap;
+    }
+    
+    .preview-badge {
+        font-size: 0.7rem;
+        padding: 6px 12px;
+        margin-top: 10px;
     }
     
     .screen:not(#screen-entry) .brand {
@@ -588,10 +643,19 @@ html, body {
         font-size: 3.5rem;
     }
     
+    .limen-title .pro-badge {
+        font-size: 1.5rem;
+        top: -6px;
+    }
+    
     .tagline {
         font-size: 0.8rem;
         margin-top: 10px;
         white-space: nowrap;
+    }
+    
+    .preview-badge {
+        margin-top: 8px;
     }
     
     h1 {
@@ -628,6 +692,15 @@ html, body {
     
     .limen-glow {
         width: 280px;
+    }
+    
+    .limen-title {
+        font-size: 3rem;
+    }
+    
+    .limen-title .pro-badge {
+        font-size: 1.3rem;
+        top: -5px;
     }
 }
 
