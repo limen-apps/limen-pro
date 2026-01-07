@@ -91,7 +91,7 @@ html, body {
 
 .tagline {
     text-align: center;
-    color: #6bc5a6;
+    color: #8b5cf6;
     font-size: 0.85rem;
     font-weight: 400;
     letter-spacing: 0.05em;
@@ -184,7 +184,7 @@ html, body {
 .btn-state:hover {
     background-color: #3a3a47;
     color: #e5e5e5;
-    border-color: #6bc5a6;
+    border-color: #8b5cf6;
 }
 
 .btn-state:active {
@@ -240,7 +240,7 @@ html, body {
 
 .timer-fill {
     fill: none;
-    stroke: #6bc5a6;
+    stroke: #8b5cf6;
     stroke-width: 4;
     stroke-linecap: round;
     stroke-dasharray: 283;
@@ -341,7 +341,7 @@ html, body {
 .stat-value {
     font-size: 2rem;
     font-weight: 500;
-    color: #6bc5a6;
+    color: #8b5cf6;
     margin-bottom: 0.5rem;
 }
 
@@ -361,7 +361,7 @@ html, body {
 }
 
 .pattern-insight h3 {
-    color: #6bc5a6;
+    color: #8b5cf6;
     margin-bottom: 0.5rem;
 }
 
@@ -378,11 +378,11 @@ html, body {
     padding: 1.5rem;
     margin-top: 1.5rem;
     text-align: left;
-    border-left: 4px solid #6bc5a6;
+    border-left: 4px solid #8b5cf6;
 }
 
 .psychological-tip h3 {
-    color: #6bc5a6;
+    color: #8b5cf6;
     margin-bottom: 0.5rem;
 }
 
