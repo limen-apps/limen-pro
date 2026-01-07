@@ -1,6 +1,6 @@
 // Local Storage Management - INTELLIGENT VERSION
 const STORAGE = {
-    KEY: 'limen_intelligent_v2',
+    KEY: 'limen_pro_intelligent_v2',
     VERSION: '2.0.0',
     
     // Initialize storage with intelligence tracking
@@ -32,7 +32,8 @@ const STORAGE = {
                     timePatterns: {},
                     adaptationLevel: 1, // 1-5 scale, increases with mastery
                     personalizedTips: [],
-                    interventionHistory: [] // Track which interventions were tried when
+                    interventionHistory: [], // Track which interventions were tried when
+                    predictiveInsights: [] // Store predictive insights
                 },
                 appStats: {
                     totalSessions: 0,
@@ -64,9 +65,20 @@ const STORAGE = {
                         mostEffectiveInterventions: [],
                         leastEffectiveInterventions: []
                     },
-                    learningLog: []
+                    learningLog: [],
+                    predictiveData: {
+                        timePatterns: {},
+                        stateTransitions: {},
+                        effectivenessByHour: {}
+                    }
                 },
-                patternInsights: []
+                patternInsights: [],
+                premiumFeatures: {
+                    predictiveEnabled: true,
+                    advancedAnalytics: true,
+                    personalizedSequences: false, // Will be enabled later
+                    dataExport: false // Will be enabled later
+                }
             };
             this.setData(data);
         }
@@ -171,6 +183,9 @@ const STORAGE = {
         // Update intelligence data for ALL sessions (not just successful ones)
         this.updateIntelligence(data, session);
         
+        // Update predictive data
+        this.updatePredictiveData(data);
+        
         // Generate personalized insight
         this.generatePersonalizedInsight(data, session);
         
@@ -271,6 +286,90 @@ const STORAGE = {
         this.updateUserPatterns(data);
     },
 
+    // Update predictive data
+    updatePredictiveData(data) {
+        const sessions = data.sessionHistory.filter(s => s.feedback);
+        
+        // Calculate time patterns for predictions
+        data.intelligence.predictiveData.timePatterns = this.calculateTimePatterns(sessions);
+        data.intelligence.predictiveData.stateTransitions = this.calculateStateTransitions(sessions);
+        data.intelligence.predictiveData.effectivenessByHour = this.calculateEffectivenessByHour(sessions);
+    },
+
+    calculateTimePatterns(sessions) {
+        const patterns = { morning: 0, afternoon: 0, evening: 0, night: 0 };
+        
+        sessions.forEach(session => {
+            const hour = new Date(session.timestamp).getHours();
+            let timeSlot;
+            
+            if (hour >= 5 && hour < 12) timeSlot = 'morning';
+            else if (hour >= 12 && hour < 17) timeSlot = 'afternoon';
+            else if (hour >= 17 && hour < 22) timeSlot = 'evening';
+            else timeSlot = 'night';
+            
+            patterns[timeSlot]++;
+        });
+        
+        return patterns;
+    },
+
+    calculateStateTransitions(sessions) {
+        const transitions = {};
+        
+        for (let i = 0; i < sessions.length - 1; i++) {
+            const from = sessions[i].state;
+            const to = sessions[i + 1].state;
+            
+            if (from && to) {
+                if (!transitions[from]) transitions[from] = {};
+                transitions[from][to] = (transitions[from][to] || 0) + 1;
+            }
+        }
+        
+        return transitions;
+    },
+
+    calculateEffectivenessByHour(sessions) {
+        const hourMap = {};
+        
+        for (let hour = 0; hour < 24; hour++) {
+            hourMap[hour] = { success: 0, total: 0 };
+        }
+        
+        sessions.forEach(session => {
+            if (session.feedback) {
+                const hour = new Date(session.timestamp).getHours();
+                hourMap[hour].total++;
+                if (session.feedback === 'yes') hourMap[hour].success++;
+            }
+        });
+        
+        // Convert to effectiveness percentages
+        const effectiveness = {};
+        for (const [hour, data] of Object.entries(hourMap)) {
+            if (data.total > 0) {
+                effectiveness[hour] = Math.round((data.success / data.total) * 100);
+            }
+        }
+        
+        return effectiveness;
+    },
+
+    // Get predictive data for engine
+    getPredictiveData() {
+        const data = this.getData();
+        if (!data) return null;
+        
+        return {
+            totalSessions: data.appStats.totalSessions,
+            timePatterns: data.intelligence.predictiveData.timePatterns,
+            stateTransitions: data.intelligence.predictiveData.stateTransitions,
+            effectivenessByHour: data.intelligence.predictiveData.effectivenessByHour,
+            sessionHistory: data.sessionHistory.filter(s => s.feedback)
+        };
+    },
+
     // Calculate effectiveness score (0-100)
     calculateEffectivenessScore(feedback) {
         switch(feedback) {
@@ -320,7 +419,7 @@ const STORAGE = {
         for (const [state, interventions] of Object.entries(data.intelligence.stateEffectiveness)) {
             for (const [intervention, stat] of Object.entries(interventions)) {
                 if (stat.total >= 2) { // Only consider interventions tried multiple times
-                    const effectiveness = (stat.success / stat.total) * 100;
+                    const effectiveness = ((stat.success * 100) + (stat.partial * 50)) / stat.total;
                     interventionStats.push({
                         state,
                         intervention,
@@ -459,6 +558,37 @@ const STORAGE = {
         }
     },
 
+    // Add predictive insight
+    addPredictiveInsight(insight) {
+        const data = this.getData();
+        if (!data) return;
+        
+        if (!data.userProfile.predictiveInsights) {
+            data.userProfile.predictiveInsights = [];
+        }
+        
+        insight.id = Date.now();
+        insight.timestamp = new Date().toISOString();
+        
+        data.userProfile.predictiveInsights.push(insight);
+        
+        // Keep only last 10 predictive insights
+        if (data.userProfile.predictiveInsights.length > 10) {
+            data.userProfile.predictiveInsights = data.userProfile.predictiveInsights.slice(-10);
+        }
+        
+        this.setData(data);
+        return insight;
+    },
+
+    // Get latest predictive insight
+    getLatestPredictiveInsight() {
+        const data = this.getData();
+        if (!data || !data.userProfile.predictiveInsights) return null;
+        
+        return data.userProfile.predictiveInsights.slice(-1)[0];
+    },
+
     // Update streak
     updateStreak(data, success) {
         if (success) {
@@ -543,6 +673,9 @@ const STORAGE = {
         // Get latest personalized insight
         const latestInsight = data.patternInsights.slice(-1)[0];
         
+        // Get latest predictive insight
+        const latestPredictive = this.getLatestPredictiveInsight();
+        
         // Get user patterns
         const userPatterns = data.intelligence.userPatterns;
         
@@ -574,6 +707,7 @@ const STORAGE = {
             bestStreak: data.userProfile.bestStreak || 0,
             adaptationLevel: data.userProfile.adaptationLevel || 1,
             personalizedInsight: latestInsight,
+            predictiveInsight: latestPredictive,
             userPatterns: userPatterns,
             intelligence: {
                 bestTimes: userPatterns.bestTimes,
@@ -582,7 +716,8 @@ const STORAGE = {
                 leastEffectiveInterventions: userPatterns.leastEffectiveInterventions,
                 dominantStates: userPatterns.dominantStates
             },
-            avgEffectiveness: data.appStats.avgEffectiveness || 0
+            avgEffectiveness: data.appStats.avgEffectiveness || 0,
+            premiumFeatures: data.premiumFeatures
         };
     },
 
@@ -651,6 +786,24 @@ const STORAGE = {
         } else {
             return "Practice builds neural pathways. Each regulation attempt strengthens the connection between prefrontal cortex and amygdala.";
         }
+    },
+
+    // Check if premium feature is enabled
+    isPremiumFeatureEnabled(feature) {
+        const data = this.getData();
+        if (!data || !data.premiumFeatures) return false;
+        
+        return data.premiumFeatures[feature] === true;
+    },
+
+    // Enable premium feature
+    enablePremiumFeature(feature) {
+        const data = this.getData();
+        if (!data || !data.premiumFeatures) return false;
+        
+        data.premiumFeatures[feature] = true;
+        this.setData(data);
+        return true;
     },
 
     // Update user setting
