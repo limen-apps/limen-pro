@@ -1,4 +1,4 @@
-// Main Application Logic - INTELLIGENT VERSION
+// Main Application Logic - INTELLIGENT VERSION WITH PREMIUM FEATURES
 class LimenApp {
     constructor() {
         this.currentScreen = 'entry';
@@ -11,12 +11,19 @@ class LimenApp {
         this.currentSessionId = null;
         this.glowElement = null;
         this.useIntelligence = true; // Enable intelligent features
+        this.predictiveEngine = null;
+        this.premiumFeatures = {
+            predictive: true,
+            advancedAnalytics: true,
+            personalizedSequences: false,
+            dataExport: false
+        };
         
         this.init();
     }
 
     init() {
-        console.log('LIMEN Intelligent App initializing...');
+        console.log('LIMEN Pro Intelligent App initializing...');
         
         // Bind all events
         this.bindEvents();
@@ -29,6 +36,9 @@ class LimenApp {
         
         // Initialize intelligence features
         this.initializeIntelligence();
+        
+        // Initialize premium features
+        this.initializePremiumFeatures();
     }
 
     initializeIntelligence() {
@@ -37,6 +47,33 @@ class LimenApp {
         if (stats && stats.totalSessions >= 3) {
             this.useIntelligence = true;
             console.log('Intelligent features enabled for user with', stats.totalSessions, 'sessions');
+        }
+    }
+
+    async initializePremiumFeatures() {
+        console.log('Initializing premium features...');
+        
+        // Check which premium features are enabled
+        const stats = STORAGE.getStats();
+        if (stats && stats.premiumFeatures) {
+            this.premiumFeatures = stats.premiumFeatures;
+        }
+        
+        // Initialize predictive engine if enabled
+        if (this.premiumFeatures.predictive && window.initPredictiveEngine) {
+            try {
+                this.predictiveEngine = await initPredictiveEngine();
+                if (this.predictiveEngine) {
+                    console.log('Predictive engine initialized successfully');
+                    
+                    // Start predictive notifications
+                    if (window.predictiveNotifications) {
+                        window.predictiveNotifications.start();
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing predictive engine:', error);
+            }
         }
     }
 
@@ -99,11 +136,80 @@ class LimenApp {
                 case 'state':
                     this.updateStateSelectionWithIntelligence();
                     break;
+                case 'entry':
+                    this.checkForPredictiveSuggestion();
+                    break;
             }
         }
     }
 
-    // Update state selection with intelligent ordering
+    // Check for predictive suggestion on entry screen
+    checkForPredictiveSuggestion() {
+        if (!this.predictiveEngine || !this.premiumFeatures.predictive) return;
+        
+        setTimeout(() => {
+            const insight = this.predictiveEngine.getPredictiveInsight();
+            if (insight.available && insight.confidence >= 0.7) {
+                this.showPredictiveSuggestion(insight);
+            }
+        }, 2000);
+    }
+
+    showPredictiveSuggestion(insight) {
+        const entryContent = document.querySelector('#screen-entry .content');
+        if (!entryContent) return;
+        
+        // Remove any existing suggestion
+        const existingSuggestion = document.querySelector('.predictive-suggestion');
+        if (existingSuggestion) {
+            existingSuggestion.remove();
+        }
+        
+        const suggestionDiv = document.createElement('div');
+        suggestionDiv.className = 'predictive-suggestion premium-feature';
+        suggestionDiv.innerHTML = `
+            <div style="display: flex; align-items: flex-start; margin-bottom: 1rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#8b5cf6" style="margin-right: 8px; flex-shrink: 0; margin-top: 2px;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                <div style="flex: 1;">
+                    <div style="font-weight: 500; color: #8b5cf6; margin-bottom: 4px;">Predictive Insight</div>
+                    <div style="font-size: 0.9rem; color: #e5e5e5; line-height: 1.4;">${insight.message}</div>
+                    <div style="font-size: 0.8rem; color: #a0a0b0; margin-top: 4px; font-style: italic;">${insight.suggestion}</div>
+                </div>
+            </div>
+            <button class="btn-predictive-action" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: #8b5cf6; padding: 0.75rem; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s ease;">
+                Start Preemptive Regulation
+            </button>
+        `;
+        
+        // Insert after the continue button
+        const continueBtn = document.getElementById('btn-continue');
+        if (continueBtn) {
+            entryContent.insertBefore(suggestionDiv, continueBtn.nextSibling);
+            
+            // Add event listener to the action button
+            const actionBtn = suggestionDiv.querySelector('.btn-predictive-action');
+            if (actionBtn) {
+                actionBtn.addEventListener('click', () => {
+                    this.selectState(insight.state);
+                });
+                
+                // Style the button on hover
+                actionBtn.addEventListener('mouseenter', () => {
+                    actionBtn.style.background = 'rgba(139, 92, 246, 0.2)';
+                    actionBtn.style.transform = 'translateY(-1px)';
+                });
+                
+                actionBtn.addEventListener('mouseleave', () => {
+                    actionBtn.style.background = 'rgba(139, 92, 246, 0.1)';
+                    actionBtn.style.transform = 'translateY(0)';
+                });
+            }
+        }
+    }
+
+    // Update state selection with intelligence
     updateStateSelectionWithIntelligence() {
         if (!this.useIntelligence) return;
         
@@ -127,7 +233,7 @@ class LimenApp {
                 
                 // Add frequency count if more than 1
                 if (frequency > 1) {
-                    btn.innerHTML = `${btn.textContent} <small>(${frequency})${indicator}</small>`;
+                    btn.innerHTML = `${btn.textContent} <small style="color: #8b5cf6;">(${frequency})${indicator}</small>`;
                 }
             }
         });
@@ -528,7 +634,7 @@ class LimenApp {
         if (currentStreakEl) {
             if (stats.improvement > 0) {
                 currentStreakEl.textContent = `+${stats.improvement}% improvement`;
-                currentStreakEl.style.color = '#6bc5a6';
+                currentStreakEl.style.color = '#8b5cf6';
             } else if (stats.improvement < 0) {
                 currentStreakEl.textContent = `${stats.improvement}% change`;
                 currentStreakEl.style.color = '#ff6b6b';
@@ -546,6 +652,11 @@ class LimenApp {
         
         // Load personalized neuroscience insight
         this.loadPersonalizedNeuroscienceTip(stats);
+        
+        // Add predictive insights if available
+        setTimeout(() => {
+            this.addPredictiveInsights(stats);
+        }, 100);
     }
 
     loadIntelligentPatternInsight(stats) {
@@ -681,7 +792,59 @@ class LimenApp {
             const adaptation = stats.adaptationLevel || 1;
             
             // Add adaptation level indicator
-            tipEl.innerHTML += `<br><small style="color: #6bc5a6; margin-top: 0.5rem; display: block;">Adaptation Level: ${adaptation}/5 (based on ${stats.totalSessions} sessions)</small>`;
+            tipEl.innerHTML += `<br><small style="color: #8b5cf6; margin-top: 0.5rem; display: block;">Adaptation Level: ${adaptation}/5 (based on ${stats.totalSessions} sessions)</small>`;
+        }
+    }
+
+    // Add predictive insights to summary
+    addPredictiveInsights(stats) {
+        if (!this.premiumFeatures.predictive || !this.predictiveEngine) return;
+        
+        const summaryContainer = document.querySelector('.summary-container');
+        if (!summaryContainer) return;
+        
+        // Remove existing predictive section if present
+        const existingPredictive = document.querySelector('.predictive-insight');
+        if (existingPredictive) {
+            existingPredictive.remove();
+        }
+        
+        const predictiveInsight = this.predictiveEngine.getPredictiveInsight();
+        
+        if (predictiveInsight.available) {
+            const predictiveSection = document.createElement('div');
+            predictiveSection.className = 'predictive-insight premium-feature';
+            predictiveSection.innerHTML = `
+                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#8b5cf6" style="margin-right: 8px;">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                    <h3 style="color: #8b5cf6; margin: 0;">Predictive Insight <span class="premium-badge">PRO</span></h3>
+                </div>
+                <p style="margin: 0; line-height: 1.5;">${predictiveInsight.message}</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #a0a0b0; font-style: italic;">
+                    ${predictiveInsight.suggestion}
+                </p>
+                <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border-left: 3px solid #8b5cf6;">
+                    <div style="font-size: 0.8rem; color: #8b5cf6; margin-bottom: 0.25rem;">Confidence: ${Math.round(predictiveInsight.confidence * 100)}%</div>
+                    <div style="font-size: 0.8rem; color: #a0a0b0;">${predictiveInsight.reason}</div>
+                </div>
+            `;
+            
+            // Insert after pattern insight
+            const patternInsight = document.querySelector('.pattern-insight');
+            if (patternInsight) {
+                patternInsight.parentNode.insertBefore(predictiveSection, patternInsight.nextSibling);
+            }
+            
+            // Store the insight
+            STORAGE.addPredictiveInsight({
+                state: predictiveInsight.state,
+                confidence: predictiveInsight.confidence,
+                message: predictiveInsight.message,
+                reason: predictiveInsight.reason,
+                suggestion: predictiveInsight.suggestion
+            });
         }
     }
 
@@ -734,17 +897,23 @@ class LimenApp {
         if (window.pushManager) {
             window.pushManager.stop();
         }
+        
+        if (window.predictiveNotifications) {
+            window.predictiveNotifications.stop();
+        }
     }
 
     // Debug methods
     showDebugInfo() {
         const stats = STORAGE.getStats();
-        console.log('=== LIMEN INTELLIGENT DEBUG INFO ===');
+        console.log('=== LIMEN PRO INTELLIGENT DEBUG INFO ===');
         console.log('Total Sessions:', stats?.totalSessions);
         console.log('Effectiveness Rate:', stats?.effectivenessRate + '%');
         console.log('Adaptation Level:', stats?.adaptationLevel);
         console.log('Current State:', this.currentState);
         console.log('Using Intelligence:', this.useIntelligence);
+        console.log('Premium Features:', this.premiumFeatures);
+        console.log('Predictive Engine:', this.predictiveEngine ? 'Active' : 'Inactive');
         console.log('Intelligence Data:', stats?.intelligence);
         console.log('========================');
     }
@@ -770,11 +939,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.preventDefault();
                 app.showDebugInfo();
             }
+            // Ctrl+Shift+P for predictive insights
+            if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+                e.preventDefault();
+                if (app.predictiveEngine) {
+                    const insight = app.predictiveEngine.getPredictiveInsight();
+                    console.log('Predictive Insight:', insight);
+                    if (insight.available) {
+                        alert(`Predictive Insight: ${insight.message}`);
+                    }
+                }
+            }
         });
         
-        console.log('LIMEN Intelligent App initialized successfully');
+        console.log('LIMEN Pro Intelligent App initialized successfully');
     } catch (error) {
-        console.error('Failed to initialize LIMEN Intelligent App:', error);
+        console.error('Failed to initialize LIMEN Pro Intelligent App:', error);
     }
 });
 
@@ -1031,7 +1211,7 @@ class EnvironmentSensor {
         const randomMessage = messages[Math.floor(Math.random() * messages.length)];
         
         if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('LIMEN', {
+            new Notification('LIMEN Pro', {
                 body: randomMessage,
                 icon: 'icon-192.png',
                 silent: true
