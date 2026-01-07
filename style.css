@@ -543,6 +543,70 @@ html, body {
     }
 }
 
+/* PREMIUM FEATURES */
+.premium-feature {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(139, 92, 246, 0.02) 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.premium-feature::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+}
+
+.predictive-insight {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(139, 92, 246, 0.03) 100%);
+    border-left: 4px solid #8b5cf6;
+}
+
+.predictive-suggestion {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Premium badge for features */
+.premium-badge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.premium-badge svg {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+}
+
+/* Predictive suggestion button */
+.btn-predictive-action {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-predictive-action:hover {
+    background: rgba(139, 92, 246, 0.2) !important;
+    transform: translateY(-1px);
+}
+
 /* RESPONSIVE */
 @media (max-width: 480px) {
     .screen {
@@ -631,6 +695,16 @@ html, body {
         width: 52px;
         height: 52px;
     }
+    
+    .premium-feature {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .predictive-suggestion {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
 }
 
 @media (max-height: 700px) {
@@ -677,6 +751,10 @@ html, body {
         width: 180px;
         height: 180px;
     }
+    
+    .premium-feature {
+        padding: 1rem;
+    }
 }
 
 @media (max-width: 360px) {
@@ -702,14 +780,27 @@ html, body {
         font-size: 1.3rem;
         top: -5px;
     }
+    
+    .premium-feature {
+        padding: 0.75rem;
+    }
 }
 
 /* ANIMATIONS */
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
     animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
 }
